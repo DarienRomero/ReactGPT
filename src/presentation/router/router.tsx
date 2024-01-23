@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import { AssistantPage } from "../pages/assistant/AssistantPage";
 import { AudioToTextPage } from "../pages/audio-to-text/AudioToTextPage";
 import { OrthographyPage } from "../pages/orthography/OrthographyPage";
@@ -8,6 +8,7 @@ import { TranslatePage } from "../pages/translate/TranslatePage";
 import { TextToAudioPage } from "../pages/text-to-audio/TextToAudioPage";
 import { ImageGenerationPage } from "../pages/image-generation/ImageGenerationPage";
 import { ImageTunningPage } from "../pages/image-tunning/ImageTunningPage";
+import { DashboardLayout } from "../layouts/DashboardLayout";
 
 export const menuRoutes = [
     {
@@ -78,7 +79,16 @@ export const menuRoutes = [
 export const router = createBrowserRouter([
     {
         path: '/',
-        element: //,
-        children: []
+        element: <DashboardLayout/>,
+        children: [
+          ...menuRoutes.map(route => ({
+            path: route.to,
+            element: route.component
+          })),
+          {
+            path: '',
+            element: <Navigate to={menuRoutes[0].to}/>
+          }
+        ]
     }
 ])
