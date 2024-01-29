@@ -1,23 +1,32 @@
 import { FormEvent, useState } from "react";
 
 interface Props {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, option: string) => void;
   placeholder?: string;
   disableCorrections?: boolean;
+  options: Option[]
 }
 
-export const TextMessageBox = ({
+interface Option {
+  id: string;
+  text: string;
+}
+
+export const TextMessageBoxSelect = ({
   onSendMessage,
   placeholder,
-  disableCorrections = false
+  disableCorrections = false,
+  options
 }: Props) => {
 
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
+
+  const [selectedOption, setSelectedOption] = useState<string>('');
 
   const handleSendMessage = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if(message.trim().length === 0) return;
-    onSendMessage(message);
+    onSendMessage(message, selectedOption);
     setMessage('')
   }
 
@@ -27,12 +36,12 @@ export const TextMessageBox = ({
       className="flex flew-row items-center h-16 rounded-xl bg-white w-full px-4"
     >
       <div className="flew-grow w-full">
-        <div className="w-full">
+        <div className="w-full flex flex-row">
           <input 
             type="text"
             autoFocus
             name="message"
-            className="relative w-full border rounded-xl text-gray-800 focus: outline-none focus:border-indigo-300 pl-4 h-10"
+            className="w-full border rounded-xl text-gray-800 focus: outline-none focus:border-indigo-300 pl-4 h-10"
             placeholder={placeholder}
             autoComplete={disableCorrections ? 'off': 'on'}
             autoCorrect={disableCorrections ? 'off': 'on'}
@@ -40,6 +49,19 @@ export const TextMessageBox = ({
             value={message}
             onChange={(e)=>setMessage(e.target.value)}
           />
+          <select 
+            name="select"
+            className="w-2/5 ml-5 border rounded-xl text-gray-800 focus:outline-none focus:border-indigo-300 pl-4 h-10"
+            value={selectedOption}
+            onChange={e => setSelectedOption(e.target.value)}
+          >
+            <option value=''>{"Seleccione"}</option>
+            {
+              options.map(({id, text}) => (
+                <option key={id}>{text}</option>
+              )) 
+            }
+          </select>
         </div>
       </div>
       <div className="ml-4">
